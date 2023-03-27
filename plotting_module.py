@@ -129,8 +129,8 @@ def plot_zonal_wind_composites(comp_dir, rwb_types, lons, lats, min_lon, max_lon
                 chandles2 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3,::3], YF[::3,::3], color = 'black', scale = 250, width = 0.0009, pivot = 'mid', headwidth = 12, headlength = 12)
                 ax.quiverkey(chandles2, X = 0.13, Y = 0.95, U = 10, label = r"10 m s$^{-1}$", labelpos='E')
                 #-------------------------------------------------------------------------------------------
-                ax.set_xlabel('relative longitude')
-                ax.set_ylabel('relative latitude')
+                ax.set_xlabel('relative longitude', fontsize = 12)
+                ax.set_ylabel('relative latitude', fontsize = 12)
                 ax.tick_params(direction = 'in')    # Tick direction... Similar to m_grid('tickdir','in') in MATLAB
                 x_tick_labels = np.arange(min_lon, max_lon + 30, 30)
                 ax.set_xticks(x_tick_labels)
@@ -287,8 +287,8 @@ def plot_eke_composites(comp_dir, rwb_types, lons, lats, min_lon, max_lon, qlv_n
                 ax.quiverkey(chandles5, X = 0.13, Y = 0.95, U = 10, label = r'10 m s$^{-1}$', labelpos='E')
                 plt.contour(trimmed_lons, lats, U, levels = np.arange(28, 43 + 6, 6), colors = 'black', linewidths = 1.5, linestyles = 'dashed')
                 #-------------------------------------------------------------------------------------------
-                ax.set_xlabel('relative longitude')
-                ax.set_ylabel('relative latitude')
+                ax.set_xlabel('relative longitude', fontsize = 12)
+                ax.set_ylabel('relative latitude', fontsize = 12)
                 ax.tick_params(direction = 'in')    # Tick direction... Similar to m_grid('tickdir','in') in MATLAB
                 x_tick_labels = np.arange(min_lon, max_lon + 30, 30)
                 ax.set_xticks(x_tick_labels)
@@ -465,8 +465,8 @@ def plot_ageo_flux_div_composites(comp_dir, rwb_types, lons, lats, min_lon, max_
                 ax.quiverkey(chandles5, X = 0.13, Y = 0.95, U = 500, label = r'500 m$^{2}$ s$^{-2}$ day$^{-1}$', labelpos='E')
                 plt.contour(trimmed_lons, lats, EKE, levels = eke_levels, colors = 'black', linewidths = 0.8, linestyles = 'solid')
                 #-------------------------------------------------------------------------------------------
-                ax.set_xlabel('relative longitude')
-                ax.set_ylabel('relative latitude')
+                ax.set_xlabel('relative longitude', fontsize = 12)
+                ax.set_ylabel('relative latitude', fontsize = 12)
                 ax.tick_params(direction = 'in')    # Tick direction... Similar to m_grid('tickdir','in') in MATLAB
                 x_tick_labels = np.arange(min_lon, max_lon + 30, 30)
                 ax.set_xticks(x_tick_labels)
@@ -552,7 +552,7 @@ def plot_eke_tendency_composites(comp_dir, rwb_types, lons, lats, min_lon, max_l
                 F = fh.variables[f"eke_tendency_{qlv}"][:, min_lon_idx:max_lon_idx + 1]
                 fh.close()
                 #-------------------------------------------------------------------------------------------
-                print(f'Plotting {name_part} events on the {qlv}K surface with ageo flux div. Label: {comp_label}. Max: {np.max(np.max(EKE))}. Min: {np.min(np.min(EKE))}')
+                print(f'Plotting {name_part} events on the {qlv}K surface with EKE tendency. Label: {comp_label}. Max: {np.max(np.max(EKE))}. Min: {np.min(np.min(EKE))}')
                 #-------------------------------------------------------------------------------------------
                 ax = plt.axes(projection = ccrs.PlateCarree())
                 
@@ -625,8 +625,8 @@ def plot_eke_tendency_composites(comp_dir, rwb_types, lons, lats, min_lon, max_l
                 chandles1 = plt.contour(trimmed_lons, lats, PV, levels = np.arange(-2,-1), colors = 'black', linewidths = 2, linestyles = 'solid')
                 plt.contour(trimmed_lons, lats, EKE, levels = eke_levels, colors = 'black', linewidths = 0.8, linestyles = 'solid')
                 #-------------------------------------------------------------------------------------------
-                ax.set_xlabel('relative longitude')
-                ax.set_ylabel('relative latitude')
+                ax.set_xlabel('relative longitude', fontsize = 12)
+                ax.set_ylabel('relative latitude', fontsize = 12)
                 ax.tick_params(direction = 'in')    # Tick direction... Similar to m_grid('tickdir','in') in MATLAB
                 x_tick_labels = np.arange(min_lon, max_lon + 30, 30)
                 ax.set_xticks(x_tick_labels)
@@ -643,6 +643,167 @@ def plot_eke_tendency_composites(comp_dir, rwb_types, lons, lats, min_lon, max_l
                 plt.colorbar(chandles0, orientation = 'horizontal')
                 figure_title = f"{title_labels} ({name_part} at {qlv}K)" 
                 save_title = f"e:/dissertation_figures/evolution_ageo_flux_div/RWB_{char_iterator}.pdf"
+                plt.title(figure_title, fontsize = 15)
+                char_iterator += 1
+                if save_plots:
+                    plt.savefig(save_title, dpi = 1000, bbox_inches = 'tight', pad_inches = 0)
+                    plt.close()
+                else:
+                    plt.show()
+                    plt.close()
+    return
+
+def plot_downstream_development(comp_dir, rwb_types, lons, lats, min_lon, max_lon, qlv_name, labels, save_plots = False):
+    """
+    Plot phi prime and agestrophic wind evolution composite means.
+
+    Args:
+        comp_dir: 
+            The directory where the netCDF files are stored containing the data for the composites.
+        rwb_types: 
+            A list of strings representing the different types of RWB that will be plotted.
+        lons and lats: 
+            Arrays containing the longitudes and latitudes of the data grid.
+        min_lon and max_lon: 
+            The minimum and maximum longitudes to be included in the plot.
+        qlv_name: 
+            A list of integers representing the isentropic levels to be plotted.
+        labels: 
+            A list of strings representing the labels for each composite plot.
+        save_plots: 
+            A Boolean variable that determines whether or not the plot should be saved to a file.
+    """
+    #-------------------------------------------------------------------------------------------------------
+    # Set up figure titles
+    #-------------------------------------------------------------------------------------------------------
+    timesteps = ['t = -24 hours', 't = -12 hours', 't = 0 hours', 't = +12 hours', 't = +24 hours']
+    #-------------------------------------------------------------------------------------------------------
+    min_lon_idx = np.where(lons == min_lon)[0][0]
+    max_lon_idx = np.where(lons == max_lon)[0][0]
+    trimmed_lons = lons[min_lon_idx:max_lon_idx + 1]
+    for q in qlv_name:
+        qlv = str(q)
+        char_iterator = 0
+        for name_part in rwb_types:
+            for ic in np.arange(len(labels)):
+                letter = chr(97 + char_iterator)
+                comp_label = labels[ic]
+                comp_time = timesteps[ic]
+                title_labels = f"({letter}) {comp_time}"
+                #-------------------------------------------------------------------------------------------
+                # Open the PV file
+                #-------------------------------------------------------------------------------------------
+                fn = f"{comp_dir}/{name_part}/pv_{qlv}_{comp_label}.nc"
+                fh = nc.Dataset(fn,'r')
+                PV = fh.variables[f"pv_{qlv}"][:, min_lon_idx:max_lon_idx + 1]
+                fh.close()
+                #-------------------------------------------------------------------------------------------
+                # Open the perturbation geopotential file
+                #-------------------------------------------------------------------------------------------
+                fn = f"{comp_dir}/{name_part}/z_{qlv}_{comp_label}_3D.nc"
+                fh = nc.Dataset(fn,'r')
+                Z = fh.variables[f"z_{qlv}"][9, :, min_lon_idx:max_lon_idx + 1] # phi prime at 250hPa
+                fh.close()
+                #-------------------------------------------------------------------------------------------
+                # Open the zonal wind file
+                #-------------------------------------------------------------------------------------------
+                fn = f"{comp_dir}/{name_part}/u_{qlv}_{comp_label}.nc"
+                fh = nc.Dataset(fn,'r')
+                U = fh.variables[f"u_{qlv}"][:, min_lon_idx:max_lon_idx + 1]
+                fh.close()
+                #-------------------------------------------------------------------------------------------
+                # Open the zonal ageostrophic wind file
+                #-------------------------------------------------------------------------------------------
+                fn = f"{comp_dir}/{name_part}/ua_{qlv}_{comp_label}.nc"
+                fh = nc.Dataset(fn,'r')
+                XF = fh.variables[f"ua_{qlv}"][:, min_lon_idx:max_lon_idx + 1]
+                fh.close()
+                XF[XF > 40] = np.nan
+                XF[XF < -40] = np.nan
+                #-------------------------------------------------------------------------------------------
+                # Open the meridional ageostrophic wind file
+                #-------------------------------------------------------------------------------------------
+                fn = f"{comp_dir}/{name_part}/va_{qlv}_{comp_label}.nc"
+                fh = nc.Dataset(fn,'r')
+                YF = fh.variables[f"va_{qlv}"][:, min_lon_idx:max_lon_idx + 1]
+                fh.close()
+                YF[YF > 40] = np.nan
+                YF[YF < -40] = np.nan
+                #-------------------------------------------------------------------------------------------
+                print(f'Plotting {name_part} events on the {qlv}K surface with downstream development. Label: {comp_label}. Max: {np.max(np.max(U))}. Min: {np.min(np.min(U))}')
+                #-------------------------------------------------------------------------------------------
+                ax = plt.axes(projection = ccrs.PlateCarree())
+                
+                if name_part == "LC1":
+                    if q == 310:
+                        levels = np.arange(-1600, 1600 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 320:
+                        levels = np.arange(-1600, 1600 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 330:
+                        levels = np.arange(-1300, 1300 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 340:
+                        levels = np.arange(-1000, 1000 + 100, 100) # Levels we want to show on the colorbar
+                    else:
+                        levels = np.arange(-800, 800 + 100, 100) # Levels we want to show on the colorbar
+                elif name_part == "P2":                    
+                    if q == 310:
+                        levels = np.arange(-1700, 1700 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 320:
+                        levels = np.arange(-2100, 2100 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 330:
+                        levels = np.arange(-2100, 2100 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 340:
+                        levels = np.arange(-1800, 1800 + 100, 100) # Levels we want to show on the colorbar
+                    else:
+                        levels = np.arange(-1500, 1500 + 100, 100) # Levels we want to show on the colorbar
+                elif name_part == "P1":
+                    if q == 310:
+                        levels = np.arange(-1200, 1200 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 320:
+                        levels = np.arange(-1900, 1900 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 330:
+                        levels = np.arange(-2100, 2100 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 340:
+                        levels = np.arange(-1600, 1600 + 100, 100) # Levels we want to show on the colorbar
+                    else:
+                        levels = np.arange(-1200, 1200 + 100, 100) # Levels we want to show on the colorbar
+                else:
+                    if q == 310:
+                        levels = np.arange(-1800, 1800 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 320:
+                        levels = np.arange(-1500, 1500 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 330:
+                        levels = np.arange(-1100, 1100 + 100, 100) # Levels we want to show on the colorbar
+                    elif q == 340:
+                        levels = np.arange(-800, 800 + 100, 100) # Levels we want to show on the colorbar
+                    else:
+                        levels = np.arange(-600, 600 + 50, 50) # Levels we want to show on the colorbar
+                            
+                chandles0 = plt.contourf(trimmed_lons, lats, Z, levels = levels, cmap = new_coolwarm)
+                chandles1 = plt.contour(trimmed_lons, lats, PV, levels = np.arange(-2,-1), colors = 'black', linewidths = 2, linestyles = 'solid')
+                chandles5 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3,::3]/2, YF[::3,::3]/2, color = 'black', scale = 250, width = 0.0009, pivot = 'mid', headwidth = 12, headlength = 12)
+                ax.quiverkey(chandles5, X = 0.13, Y = 0.95, U = 10, label = r'10 m s$^{-1}$', labelpos='E')
+                chandles3 = plt.contour(trimmed_lons, lats, U, levels = np.arange(28, 43 + 6, 6),colors = 'black', linewidths = 1.5, linestyles = 'dashed')
+                #-------------------------------------------------------------------------------------------
+                ax.set_xlabel('relative longitude', fontsize = 12)
+                ax.set_ylabel('relative latitude', fontsize = 12)
+                ax.tick_params(direction = 'in')    # Tick direction... Similar to m_grid('tickdir','in') in MATLAB
+                x_tick_labels = np.arange(min_lon, max_lon + 30, 30)
+                ax.set_xticks(x_tick_labels)
+                y_tick_labels = np.arange(-20, 30, 10)
+                ax.set_yticks(y_tick_labels)
+                ax.set_ylim([min(lats), max(lats)])
+                ax.set_xlim([min(trimmed_lons), max(trimmed_lons)])
+                lon_formatter = cticker.LongitudeFormatter()
+                ax.xaxis.set_major_formatter(lon_formatter)
+                lat_formatter = cticker.LatitudeFormatter()
+                ax.yaxis.set_major_formatter(lat_formatter)
+                plt.grid(linestyle = ':', linewidth = 0.5)
+                ax.clabel(chandles1, chandles1.levels[::2], fontsize = 8)
+                ax.clabel(chandles3,chandles3.levels, fontsize = 8)
+                plt.colorbar(chandles0, orientation = 'horizontal')
+                figure_title = f"{title_labels} ({name_part} at {qlv}K)" 
+                save_title = f"e:/dissertation_figures/evolution_phi_prime/RWB_{char_iterator}.pdf"
                 plt.title(figure_title, fontsize = 15)
                 char_iterator += 1
                 if save_plots:
