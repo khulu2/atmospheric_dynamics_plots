@@ -11,10 +11,11 @@ import numpy as np
 # import cartopy.feature as cfeature
 import cartopy.mpl.ticker as cticker
 from matplotlib.colors import ListedColormap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 plt.rcParams['text.usetex'] = True
 import matplotlib
-matplotlib.rcParams['mathtext.fontset'] = 'stix'
-matplotlib.rcParams['font.family'] = 'STIXGeneral'
+# matplotlib.rcParams['mathtext.fontset'] = 'stix'
+# matplotlib.rcParams['font.family'] = 'STIXGeneral'
 #-------------------------------------------------------------------------------------------------------
 # Set up figure titles
 #-------------------------------------------------------------------------------------------------------
@@ -130,7 +131,7 @@ def plot_zonal_wind_composites(comp_dir, rwb_types, lons, lats, min_lon, max_lon
                 else:
                     chandles3 = plt.contour(trimmed_lons, lats, MF, levels = np.arange(20, round(np.max(np.max(MF))) + 100, 100), colors = 'red', linewidths = 0.5, linestyles = 'solid')
                 
-                chandles4 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3, ::3], YF[::3, ::3], color = 'black', scale = 250, width = 0.0009, pivot = 'mid', headwidth = 12, headlength = 12)
+                chandles4 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3, ::3], YF[::3, ::3], color = 'black', scale = 250, width = 0.0028, pivot = 'mid', headwidth = 6, headlength = 6)
                 ax.quiverkey(chandles4, X = 0.13, Y = 0.95, U = 10, label = r"10 m s$^{-1}$", labelpos='E')
                 #-------------------------------------------------------------------------------------------
                 ax.set_xlabel('relative longitude', fontsize = 12)
@@ -152,8 +153,8 @@ def plot_zonal_wind_composites(comp_dir, rwb_types, lons, lats, min_lon, max_lon
                 ax.clabel(chandles2, chandles2.levels, fontsize = 8)
                 plt.colorbar(chandles0, orientation = 'horizontal')
                 figure_title = f"{title_labels} ({name_part} at {qlv}K)" 
-                save_title = f"e:/dissertation_figures/evolution_zonal_wind/RWB_{char_iterator}.pdf"
-                plt.title(figure_title, fontsize = 15)
+                save_title = f"e:/dissertation_figures/evolution_zonal_wind/RWB_{qlv}_{char_iterator}.pdf"
+                plt.title(figure_title, fontsize = 20)
                 char_iterator += 1
                 if save_plots:
                     plt.savefig(save_title, dpi = 1000, bbox_inches = 'tight', pad_inches = 0)
@@ -282,7 +283,7 @@ def plot_eke_composites(comp_dir, rwb_types, lons, lats, min_lon, max_lon, qlv_n
                             
                 chandles0 = plt.contourf(trimmed_lons, lats, EKE, levels = levels, cmap = 'cubehelix_r')
                 chandles1 = plt.contour(trimmed_lons, lats, PV, levels = np.arange(-2, -1), colors = 'black', linewidths = 2, linestyles = 'solid')
-                chandles2 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3,::3], YF[::3,::3], color = 'black', scale = 250, width = 0.0009, pivot = 'mid', headwidth = 12, headlength = 12)
+                chandles2 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3,::3], YF[::3,::3], color = 'black', scale = 250, width = 0.0028, pivot = 'mid', headwidth = 6, headlength = 6)
                 ax.quiverkey(chandles2, X = 0.13, Y = 0.95, U = 10, label = r'10 m s$^{-1}$', labelpos='E')
                 chandles3 = plt.contour(trimmed_lons, lats, U, levels = np.arange(28, 43 + 6, 6), colors = 'black', linewidths = 1.5, linestyles = 'dashed')
                 #-------------------------------------------------------------------------------------------
@@ -304,8 +305,8 @@ def plot_eke_composites(comp_dir, rwb_types, lons, lats, min_lon, max_lon, qlv_n
                 ax.clabel(chandles3, chandles3.levels, fontsize = 8)
                 plt.colorbar(chandles0, orientation = 'horizontal')
                 figure_title = f"{title_labels} ({name_part} at {qlv}K)" 
-                save_title = f"e:/dissertation_figures/evolution_eke/RWB_{char_iterator}.pdf"
-                plt.title(figure_title, fontsize = 15)
+                save_title = f"e:/dissertation_figures/evolution_eke/RWB_{qlv}_{char_iterator}.pdf"
+                plt.title(figure_title, fontsize = 20)
                 char_iterator += 1
                 if save_plots:
                     plt.savefig(save_title, dpi = 1000, bbox_inches = 'tight', pad_inches = 0)
@@ -455,7 +456,7 @@ def plot_ageo_flux_div_composites(comp_dir, rwb_types, lons, lats, min_lon, max_
                             
                 chandles0 = plt.contourf(trimmed_lons, lats, F, levels = levels, cmap = new_bwr)
                 chandles1 = plt.contour(trimmed_lons, lats, PV, levels = np.arange(-2,-1), colors = 'black', linewidths = 2, linestyles = 'solid')
-                chandles2 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3, ::3], YF[::3, ::3], color = 'black', scale = 11000, width = 0.0009, pivot = 'mid', headwidth = 12, headlength = 12)
+                chandles2 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3, ::3], YF[::3, ::3], color = 'black', scale = 11000, width = 0.0028, pivot = 'mid', headwidth = 6, headlength = 6)
                 ax.quiverkey(chandles2, X = 0.13, Y = 0.95, U = 500, label = r'500 m$^{2}$ s$^{-2}$ day$^{-1}$', labelpos='E')
                 chandles3 = plt.contour(trimmed_lons, lats, EKE, levels = eke_levels, colors = 'black', linewidths = 0.8, linestyles = 'solid')
                 #-------------------------------------------------------------------------------------------
@@ -477,8 +478,8 @@ def plot_ageo_flux_div_composites(comp_dir, rwb_types, lons, lats, min_lon, max_
                 ax.clabel(chandles3, chandles3.levels[::3], fontsize = 8)
                 plt.colorbar(chandles0, orientation = 'horizontal')
                 figure_title = f"{title_labels} ({name_part} at {qlv}K)" 
-                save_title = f"e:/dissertation_figures/evolution_ageo_flux_div/RWB_{char_iterator}.pdf"
-                plt.title(figure_title, fontsize = 15)
+                save_title = f"e:/dissertation_figures/evolution_ageo_flux_div/RWB_{qlv}_{char_iterator}.pdf"
+                plt.title(figure_title, fontsize = 20)
                 char_iterator += 1
                 if save_plots:
                     plt.savefig(save_title, dpi = 1000, bbox_inches = 'tight', pad_inches = 0)
@@ -633,8 +634,8 @@ def plot_eke_tendency_composites(comp_dir, rwb_types, lons, lats, min_lon, max_l
                 ax.clabel(chandles2, chandles2.levels[::3], fontsize = 8)
                 plt.colorbar(chandles0, orientation = 'horizontal')
                 figure_title = f"{title_labels} ({name_part} at {qlv}K)" 
-                save_title = f"e:/dissertation_figures/evolution_ageo_flux_div/RWB_{char_iterator}.pdf"
-                plt.title(figure_title, fontsize = 15)
+                save_title = f"e:/dissertation_figures/evolution_eke_tendency/RWB_{qlv}_{char_iterator}.pdf"
+                plt.title(figure_title, fontsize = 20)
                 char_iterator += 1
                 if save_plots:
                     plt.savefig(save_title, dpi = 1000, bbox_inches = 'tight', pad_inches = 0)
@@ -702,7 +703,7 @@ def plot_downstream_development(comp_dir, rwb_types, lons, lats, min_lon, max_lo
                 #-------------------------------------------------------------------------------------------
                 fn = f"{comp_dir}/{name_part}/ua_{qlv}_{comp_label}.nc"
                 fh = nc.Dataset(fn,'r')
-                XF = fh.variables[f"ua_{qlv}"][:, min_lon_idx:max_lon_idx + 1]
+                XF = fh.variables[f"ua_{qlv}"][:, min_lon_idx:max_lon_idx + 1] * 10
                 fh.close()
                 XF[XF > 40] = np.nan
                 XF[XF < -40] = np.nan
@@ -711,7 +712,7 @@ def plot_downstream_development(comp_dir, rwb_types, lons, lats, min_lon, max_lo
                 #-------------------------------------------------------------------------------------------
                 fn = f"{comp_dir}/{name_part}/va_{qlv}_{comp_label}.nc"
                 fh = nc.Dataset(fn,'r')
-                YF = fh.variables[f"va_{qlv}"][:, min_lon_idx:max_lon_idx + 1]
+                YF = fh.variables[f"va_{qlv}"][:, min_lon_idx:max_lon_idx + 1] * 10
                 fh.close()
                 YF[YF > 40] = np.nan
                 YF[YF < -40] = np.nan
@@ -767,7 +768,7 @@ def plot_downstream_development(comp_dir, rwb_types, lons, lats, min_lon, max_lo
                             
                 chandles0 = plt.contourf(trimmed_lons, lats, Z, levels = levels, cmap = new_coolwarm)
                 chandles1 = plt.contour(trimmed_lons, lats, PV, levels = np.arange(-2,-1), colors = 'black', linewidths = 2, linestyles = 'solid')
-                chandles5 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3, ::3]/2, YF[::3, ::3]/2, color = 'black', scale = 250, width = 0.0009, pivot = 'mid', headwidth = 12, headlength = 12)
+                chandles5 = plt.quiver(trimmed_lons[::3], lats[::3], XF[::3, ::3]/2, YF[::3, ::3]/2, color = 'black', scale = 250, width = 0.0028, pivot = 'mid', headwidth = 6, headlength = 6)
                 ax.quiverkey(chandles5, X = 0.13, Y = 0.95, U = 10, label = r'10 m s$^{-1}$', labelpos='E')
                 chandles3 = plt.contour(trimmed_lons, lats, U, levels = np.arange(28, 43 + 6, 6), colors = 'black', linewidths = 1.5, linestyles = 'dashed')
                 #-------------------------------------------------------------------------------------------
@@ -789,8 +790,8 @@ def plot_downstream_development(comp_dir, rwb_types, lons, lats, min_lon, max_lo
                 ax.clabel(chandles3, chandles3.levels, fontsize = 8)
                 plt.colorbar(chandles0, orientation = 'horizontal')
                 figure_title = f"{title_labels} ({name_part} at {qlv}K)" 
-                save_title = f"e:/dissertation_figures/evolution_phi_prime/RWB_{char_iterator}.pdf"
-                plt.title(figure_title, fontsize = 15)
+                save_title = f"e:/dissertation_figures/evolution_phi_prime/RWB_{qlv}_{char_iterator}.pdf"
+                plt.title(figure_title, fontsize = 20)
                 char_iterator += 1
                 if save_plots:
                     plt.savefig(save_title, dpi = 1000, bbox_inches = 'tight', pad_inches = 0)
@@ -862,7 +863,7 @@ def plot_strain_rate_composites(comp_dir, rwb_types, lons, lats, min_lon, max_lo
                 fh.close()
                 SR = SR * 1e6
                 #-------------------------------------------------------------------------------------------
-                print(f'Plotting {name_part} events on the {qlv}K surface with zonal wind. Label: {comp_label}. Max: {np.max(np.max(U))}. Min: {np.min(np.min(U))}')
+                print(f'Plotting {name_part} events on the {qlv}K surface with strain rate. Label: {comp_label}. Max: {np.max(np.max(U))}. Min: {np.min(np.min(U))}')
                 #-------------------------------------------------------------------------------------------
                 ax = plt.axes(projection = ccrs.PlateCarree())
                                 
@@ -892,8 +893,111 @@ def plot_strain_rate_composites(comp_dir, rwb_types, lons, lats, min_lon, max_lo
                 ax.clabel(chandles3, chandles3.levels, fontsize = 8)
                 plt.colorbar(chandles0, orientation = 'horizontal')
                 figure_title = f"{title_labels} ({name_part} at {qlv}K)" 
-                save_title = f"e:/dissertation_figures/evolution_zonal_wind/RWB_{char_iterator}.pdf"
-                plt.title(figure_title, fontsize = 15)
+                save_title = f"e:/dissertation_figures/evolution_strain_rate/RWB_{qlv}_{char_iterator}.pdf"
+                plt.title(figure_title, fontsize = 20)
+                char_iterator += 1
+                if save_plots:
+                    plt.savefig(save_title, dpi = 1000, bbox_inches = 'tight', pad_inches = 0)
+                    plt.close()
+                else:
+                    plt.show()
+                    plt.close()
+    return
+
+def plot_meridionally_averaged_composites(comp_dir, rwb_types, lons, min_lon, max_lon, qlv_name, pressure_levels, labels, save_plots = False):
+    """
+    Plot meridionally averaged variables evolution composite means.
+
+    Args:
+        comp_dir: 
+            The directory where the netCDF files are stored containing the data for the composites.
+        rwb_types: 
+            A list of strings representing the different types of RWB that will be plotted.
+        lons and lats: 
+            Arrays containing the longitudes and latitudes of the data grid.
+        min_lon and max_lon: 
+            The minimum and maximum longitudes to be included in the plot.
+        qlv_name: 
+            A list of integers representing the isentropic levels to be plotted.
+        labels: 
+            A list of strings representing the labels for each composite plot.
+        save_plots: 
+            A Boolean variable that determines whether or not the plot should be saved to a file.
+    """
+    min_lon_idx = np.where(lons == min_lon)[0][0]
+    max_lon_idx = np.where(lons == max_lon)[0][0]
+    trimmed_lons = lons[min_lon_idx:max_lon_idx + 1]
+    for q in qlv_name:
+        qlv = str(q)
+        char_iterator = 0
+        for name_part in rwb_types:
+            for ic in np.arange(len(labels)):
+                letter = chr(97 + char_iterator)
+                comp_label = labels[ic]
+                comp_time = timesteps[ic]
+                title_labels = f"({letter}) {comp_time}"
+                #-------------------------------------------------------------------------------------------
+                # Open the PV file
+                #-------------------------------------------------------------------------------------------
+                fn = f"{comp_dir}/{name_part}/meridional_average_pv_{qlv}_{comp_label}.txt"
+                PV = np.loadtxt(fn, delimiter=',')
+                PV = PV * 1e6
+                PV = PV[min_lon_idx:max_lon_idx + 1, :]
+                #-------------------------------------------------------------------------------------------
+                # Open the basic state PV file
+                #-------------------------------------------------------------------------------------------
+                fn = f"{comp_dir}/{name_part}/meridional_average_bs_pv_{qlv}_{comp_label}.txt"
+                BPV = np.loadtxt(fn, delimiter=',')
+                BPV = BPV * 1e6
+                BPV = BPV[min_lon_idx:max_lon_idx + 1, :]
+                #-------------------------------------------------------------------------------------------
+                # Open the eddy geopotential file
+                #-------------------------------------------------------------------------------------------
+                fn = f"{comp_dir}/{name_part}/meridional_average_z_{qlv}_{comp_label}.txt"
+                Z = np.loadtxt(fn, delimiter=',')
+                Z = Z[min_lon_idx:max_lon_idx + 1, :]
+                #-------------------------------------------------------------------------------------------
+                # PV anomaly
+                #-------------------------------------------------------------------------------------------
+                APV = PV - BPV
+                #-------------------------------------------------------------------------------------------
+                print(f'Plotting {name_part} cross sections of events on the {qlv}K surface. Label: {comp_label}. Max: {np.max(np.max(APV))}. Min: {np.min(np.min(APV))}')
+                #-------------------------------------------------------------------------------------------
+                fig, ax = plt.subplots(figsize=(8, 8))
+            
+                # levels = np.arange(-84,84+4,4)
+                levels = np.arange(-1, 1.1, 0.1)
+                
+                chandles0 = plt.contourf(trimmed_lons, np.arange(1,18), np.transpose(APV), levels = levels, cmap = new_bwr)
+                chandles1 = plt.contour(trimmed_lons, np.arange(1,18), np.transpose(PV), levels = np.arange(-2,-1),colors = 'black', linewidths = 2, linestyles = 'solid')
+                chandles2 = plt.contour(trimmed_lons, np.arange(1,18), np.transpose(Z), levels = np.arange(-1000,-50,50), colors = 'red', linewidths = 1, linestyles = 'dashed')
+                chandles3 = plt.contour(trimmed_lons, np.arange(1,18), np.transpose(Z), levels = np.arange(100,1050,50), colors = 'blue', linewidths = 1, linestyles = 'solid')               
+                #-------------------------------------------------------------------------------------------
+                plt.yscale('log')
+                ax.set_xlabel('latitude', fontsize = 12)
+                ax.set_ylabel('pressure level (hPa)', fontsize = 12)
+                ax.tick_params(direction = 'in')    # Tick direction... Similar to m_grid('tickdir','in') in MATLAB
+                x_tick_labels = trimmed_lons[::4]
+                ax.set_xticks(x_tick_labels)
+                ax.set_xticklabels(['60°W','50°W','40°W','30°W','20°W','10°W','0°','10°E','20°E','30°E','40°E','50°E','60°E'])
+                y_tick_labels = np.arange(1,18)
+                ax.set_yticks(y_tick_labels)
+                ax.set_yticklabels(["".join(item) for item in pressure_levels.astype(str)])
+                plt.grid(linestyle = ':',linewidth = 0.5)
+                ax.clabel(chandles1,chandles1.levels, fontsize = 6)
+                ax.clabel(chandles2,chandles2.levels[::3], fontsize = 6)
+                ax.clabel(chandles3,chandles3.levels[::3], fontsize = 6)
+                
+                divider = make_axes_locatable(ax)
+                cax = divider.new_vertical(size = "5%",
+                                    pad = 0.4,
+                                    pack_start = True)
+                fig.add_axes(cax)
+                cbar = plt.colorbar(chandles0,cax = cax, orientation = 'horizontal', ticks = levels[::5])
+                cbar.ax.set_xticklabels(["".join(item) for item in np.arange(-1,1.5,0.5).astype(str)])
+                figure_title = f"{title_labels} ({name_part} at {qlv}K)" 
+                save_title = f"e:/dissertation_figures/evolution_meridional_averages_composites/RWB_{qlv}_{char_iterator}.pdf"
+                ax.set_title(figure_title, fontsize = 20)
                 char_iterator += 1
                 if save_plots:
                     plt.savefig(save_title, dpi = 1000, bbox_inches = 'tight', pad_inches = 0)
