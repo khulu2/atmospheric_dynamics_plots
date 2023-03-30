@@ -16,7 +16,7 @@ lats = np.arange(27.5, -30, -2.5)
 pressure_levels = [1000,925,850,700,600,500,400,300,250,200,150,100,70,50,30,20,10]
 pressure_levels = np.array(pressure_levels)
 #-------------------------------------------------------------------------------------------------------
-pm.plot_zonal_wind_composites(comp_dir, rwb_type, lons, lats, -60, 60, qlv_name, labels, True)
+# pm.plot_zonal_wind_composites(comp_dir, rwb_type, lons, lats, -60, 60, qlv_name, labels, True)
 pm.plot_eke_composites(comp_dir, rwb_type, lons, lats, -60, 60, qlv_name, labels, True)
 pm.plot_ageo_flux_div_composites(comp_dir, rwb_type, lons, lats, -60, 60, qlv_name, labels, True)
 pm.plot_eke_tendency_composites(comp_dir, rwb_type, lons, lats, -60, 60, qlv_name, labels, True)
